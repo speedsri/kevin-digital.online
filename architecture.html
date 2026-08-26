@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Architecture | Kevin Digital Developer</title>
+<meta name="description" content="A full technical walkthrough of the DT Platform4 architecture: inbound flow, outbound flow, sender mapping and database schema.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-kd py-3">
+  <div class="container-xl">
+    <a class="navbar-brand" href="index.html">
+      <span class="brand-mark">K</span>
+      Kevin Digital Developer
+    </a>
+    <button class="navbar-toggler border-0 text-white" type="button" data-bs-toggle="collapse" data-bs-target="#kdNav">
+      <i class="bi bi-list fs-2 text-white"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="kdNav">
+      <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-1">
+        <li class="nav-item"><a class="nav-link " href="index.html">Home</a></li>
+        <li class="nav-item"><a class="nav-link " href="about.html">About</a></li>
+        <li class="nav-item"><a class="nav-link " href="platform.html">Platform</a></li>
+        <li class="nav-item"><a class="nav-link " href="features.html">Features</a></li>
+        <li class="nav-item"><a class="nav-link active" href="architecture.html">Architecture</a></li>
+        <li class="nav-item"><a class="nav-link " href="benefits.html">Why Us</a></li>
+        <li class="nav-item"><a class="nav-link " href="contact.html">Contact</a></li>
+        <li class="nav-item ms-lg-3 mt-2 mt-lg-0"><a class="btn-kd-primary" href="contact.html">Request Demo</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+<main>
+<section class="page-hero">
+  <div class="container-xl">
+    <div class="breadcrumb-kd mb-3">Home <span class="sep">/</span> Architecture</div>
+    <h1>The full architecture, explained end to end</h1>
+    <p class="lead" style="color:rgba(255,255,255,.72);max-width:680px;">Inbound flow, outbound flow, sender mapping and database schema — everything that makes DT Platform4 reliable, transparent and auditable.</p>
+  </div>
+</section>
+
+<section class="section section-alt">
+  <div class="container-xl">
+    <div class="kicker">Complete system diagram</div>
+    <h2 class="section-title mb-4">Capture · Store · Manage · Reply · Audit</h2>
+    <div class="diagram-frame">
+      <img src="assets/architecture-diagram.png" alt="Full DT Platform4 architecture diagram">
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container-xl">
+    <div class="row g-4">
+      <div class="col-lg-4">
+        <div class="kd-card h-100">
+          <span class="tag-chip tag-customer mb-3 d-inline-block">01 · INBOUND</span>
+          <h3>Incoming Message Flow</h3>
+          <p>The customer's message hits the Meta WhatsApp Cloud API, is delivered to our PHP webhook, and passes signature verification, request validation and duplicate prevention before it's saved.</p>
+          <ul class="check-list mt-3">
+            <li><i class="bi bi-check-circle-fill"></i> Create/update customer &amp; conversation</li>
+            <li><i class="bi bi-check-circle-fill"></i> Insert message with channel = CUSTOMER</li>
+            <li><i class="bi bi-check-circle-fill"></i> Insert initial status event</li>
+          </ul>
+        </div>
+      </div>
+      <div class="col-lg-4">
+        <div class="kd-card h-100">
+          <span class="tag-chip tag-dashboard mb-3 d-inline-block">02 · OUTBOUND</span>
+          <h3>Outgoing Reply Flow</h3>
+          <p>Whether a reply comes from the Dashboard, Mattermost, or an automation, it's always written to the database first, then sent through the WhatsApp Cloud API — "write first, then send."</p>
+          <ul class="check-list mt-3">
+            <li><i class="bi bi-check-circle-fill"></i> Dashboard replies tagged to logged-in user</li>
+            <li><i class="bi bi-check-circle-fill"></i> Mattermost replies mapped to real names</li>
+            <li><i class="bi bi-check-circle-fill"></i> Automated replies tagged channel = AUTO</li>
+          </ul>
+        </div>
+      </div>
+      <div class="col-lg-4">
+        <div class="kd-card h-100">
+          <span class="tag-chip tag-mattermost mb-3 d-inline-block">03 · ATTRIBUTION</span>
+          <h3>Mattermost Sender Mapping</h3>
+          <p>The mattermost_user_map table links each Mattermost username to a real staff user ID and display name — so reporting is always accurate and readable.</p>
+          <ul class="check-list mt-3">
+            <li><i class="bi bi-check-circle-fill"></i> Proper staff attribution</li>
+            <li><i class="bi bi-check-circle-fill"></i> Raw usernames always preserved</li>
+            <li><i class="bi bi-check-circle-fill"></i> New users mapped easily via admin</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section section-navy">
+  <div class="container-xl">
+    <div class="kicker" style="color:#7FE0C4;">Database schema</div>
+    <h2 class="section-title mb-5">A normalized schema built for a permanent audit trail</h2>
+    <div class="row g-4">
+      <div class="col-md-6 col-lg-4">
+        <div class="kd-card h-100" style="background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.14);">
+          <h4 class="text-white mono" style="font-size:1rem;">users</h4>
+          <p style="color:rgba(255,255,255,.65);">Staff accounts — id, name, email, password_hash, role, timestamps.</p>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-4">
+        <div class="kd-card h-100" style="background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.14);">
+          <h4 class="text-white mono" style="font-size:1rem;">customers</h4>
+          <p style="color:rgba(255,255,255,.65);">WhatsApp contacts — id, phone (unique), name, profile picture, timestamps.</p>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-4">
+        <div class="kd-card h-100" style="background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.14);">
+          <h4 class="text-white mono" style="font-size:1rem;">conversations</h4>
+          <p style="color:rgba(255,255,255,.65);">One thread per customer — id, customer_id, status, last_message_at.</p>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-4">
+        <div class="kd-card h-100" style="background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.14);">
+          <h4 class="text-white mono" style="font-size:1rem;">messages</h4>
+          <p style="color:rgba(255,255,255,.65);">Every message — content, media, channel, sender, whatsapp_message_id.</p>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-4">
+        <div class="kd-card h-100" style="background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.14);">
+          <h4 class="text-white mono" style="font-size:1rem;">message_status_events</h4>
+          <p style="color:rgba(255,255,255,.65);">Full delivery lifecycle — sent, delivered, read, failed, with raw response.</p>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-4">
+        <div class="kd-card h-100" style="background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.14);">
+          <h4 class="text-white mono" style="font-size:1rem;">mattermost_user_map</h4>
+          <p style="color:rgba(255,255,255,.65);">Maps Mattermost usernames to internal user IDs and display names.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section section-alt">
+  <div class="container-xl">
+    <div class="row g-5 align-items-center">
+      <div class="col-lg-6">
+        <div class="kicker">Security &amp; reliability</div>
+        <h2 class="section-title">Every layer is verified before it's trusted</h2>
+        <ul class="check-list mt-3">
+          <li><i class="bi bi-check-circle-fill"></i> Meta signature verification for all webhooks</li>
+          <li><i class="bi bi-check-circle-fill"></i> Prepared statements (SQL injection protection)</li>
+          <li><i class="bi bi-check-circle-fill"></i> Strong password hashing</li>
+          <li><i class="bi bi-check-circle-fill"></i> Secure session management &amp; login</li>
+          <li><i class="bi bi-check-circle-fill"></i> CSRF protection on all forms</li>
+          <li><i class="bi bi-check-circle-fill"></i> Input validation &amp; sanitization</li>
+          <li><i class="bi bi-check-circle-fill"></i> Complete audit trail, write-first principle</li>
+        </ul>
+      </div>
+      <div class="col-lg-6">
+        <div class="kicker">Integrations</div>
+        <h2 class="section-title">Works with the tools your team already uses</h2>
+        <div class="row g-3">
+          <div class="col-12">
+            <div class="kd-card d-flex align-items-center gap-3 py-3">
+              <div class="icon-box bg-g2 mb-0"><i class="bi bi-diagram-3"></i></div>
+              <div><h4 class="mb-0">n8n Automation</h4><p class="mb-0">Workflow automation, alerts, AI replies, data sync.</p></div>
+            </div>
+          </div>
+          <div class="col-12">
+            <div class="kd-card d-flex align-items-center gap-3 py-3">
+              <div class="icon-box bg-g3 mb-0"><i class="bi bi-chat-square-dots"></i></div>
+              <div><h4 class="mb-0">Mattermost</h4><p class="mb-0">Real-time team collaboration and notifications.</p></div>
+            </div>
+          </div>
+          <div class="col-12">
+            <div class="kd-card d-flex align-items-center gap-3 py-3">
+              <div class="icon-box bg-g1 mb-0"><i class="bi bi-whatsapp"></i></div>
+              <div><h4 class="mb-0">WhatsApp Cloud API</h4><p class="mb-0">Official Meta API for secure message delivery.</p></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container-xl">
+    <div class="cta-band">
+      <div class="row align-items-center g-4">
+        <div class="col-lg-8">
+          <h2>Want the technical deep-dive?</h2>
+          <p class="mb-0" style="opacity:.9;">We'll walk your dev team through the schema, the webhook layer, and the integrations.</p>
+        </div>
+        <div class="col-lg-4 text-lg-end">
+          <a href="contact.html" class="btn btn-light fw-bold px-4 py-2 rounded-pill">Talk to an Engineer</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+</main>
+<footer class="footer-kd">
+  <div class="container-xl">
+    <div class="row g-4">
+      <div class="col-lg-4">
+        <div class="d-flex align-items-center gap-2 mb-3">
+          <span class="brand-mark">K</span>
+          <span class="fw-bold text-white" style="font-family:'Sora',sans-serif;">Kevin Digital Developer</span>
+        </div>
+        <p class="mb-3" style="max-width:320px;">Complete IT &amp; digital solutions — building, connecting, securing and growing businesses with reliable technology and custom WhatsApp automation.</p>
+        <div class="d-flex gap-2">
+          <a href="#" class="btn btn-sm btn-kd-ghost"><i class="bi bi-facebook"></i></a>
+          <a href="#" class="btn btn-sm btn-kd-ghost"><i class="bi bi-whatsapp"></i></a>
+          <a href="#" class="btn btn-sm btn-kd-ghost"><i class="bi bi-linkedin"></i></a>
+        </div>
+      </div>
+      <div class="col-lg-2 col-6">
+        <h5>Company</h5>
+        <ul class="list-unstyled footer-links">
+          <li><a href="about.html">About Us</a></li>
+          <li><a href="benefits.html">Why Choose Us</a></li>
+          <li><a href="contact.html">Contact</a></li>
+        </ul>
+      </div>
+      <div class="col-lg-3 col-6">
+        <h5>Platform</h5>
+        <ul class="list-unstyled footer-links">
+          <li><a href="platform.html">Platform Overview</a></li>
+          <li><a href="features.html">Features</a></li>
+          <li><a href="architecture.html">Architecture</a></li>
+        </ul>
+      </div>
+      <div class="col-lg-3">
+        <h5>Get in touch</h5>
+        <ul class="list-unstyled footer-links">
+          <li><i class="bi bi-geo-alt me-2"></i>Alakoladeniya, Kurunagala, Sri Lanka</li>
+          <li><i class="bi bi-telephone me-2"></i>+94 70 211 0343</li>
+          <li><i class="bi bi-envelope me-2"></i>info@kevindevelopers.lk</li>
+          <li><i class="bi bi-globe me-2"></i>www.kevindevelopers.lk</li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom d-flex flex-wrap justify-content-between gap-2">
+      <span>© 2026 Kevin Digital Developer. All rights reserved.</span>
+      <span>Building • Connecting • Securing • Growing</span>
+    </div>
+  </div>
+</footer>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="assets/main.js"></script>
+</body></html>
