@@ -1,0 +1,18 @@
+# Build output (GitHub Actions rebuilds it on every push)
+dist/
+# Dependencies / tooling
+node_modules/
+.npm/
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.swp
+# Local environment files — never commit secrets
+.env
+.env.*
+# Test artefacts
+screenshots/
+*.log
+__pycache__/

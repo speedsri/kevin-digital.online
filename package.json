@@ -1,0 +1,15 @@
+{
+  "name": "kevin-digital-developers-website",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Static corporate website for Kevin Digital Developers (EN/SI/TA), built for GitHub Pages.",
+  "type": "module",
+  "engines": { "node": ">=18.17" },
+  "scripts": {
+    "build": "node build.mjs",
+    "serve": "node tools/serve.mjs",
+    "dev": "node build.mjs && node tools/serve.mjs",
+    "check:i18n": "STRICT_I18N=1 node build.mjs"
+  },
+  "license": "UNLICENSED"
+}
